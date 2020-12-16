@@ -2,20 +2,25 @@ let config = {
     progress: 1,
     gameover: 2
 };
-const Game = (function() {
-    function startFireworks(Fireworks, container) {
-        const fireworks = new Fireworks(container, {
-          maxRockets: 3, // max # of rockets to spawn
-          rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
-          numParticles: 100, // number of particles to spawn when rocket explodes (+0-10)
-          explosionMinHeight: 0.2, // percentage. min height at which rockets can explode
-          explosionMaxHeight: 0.9, // percentage. max height before a particle is exploded
-          explosionChance: 0.08 // chance in each tick the rocket will explode
-        })
-      
-        fireworks.start()
-    }
-   
+
+const Fireworks = window.Fireworks;
+
+const fwc = document.getElementById('fireworks');
+const pwc = document.getElementById('game-panel');
+
+const options = {
+    maxRockets: 3, // max # of rockets to spawn
+    rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
+    numParticles: 100, // number of particles to spawn when rocket explodes (+0-10)
+    explosionMinHeight: 0.2, // percentage. min height at which rockets can explode
+    explosionMaxHeight: 0.9, // percentage. max height before a particle is exploded
+    explosionChance: 0.08, // chance in each tick the rocket will explode,
+    width: 425,
+    height: 424
+};
+
+
+const Game = (function() {   
     let canvas = [],
         context = [],
         grid = [],
@@ -27,7 +32,8 @@ const Game = (function() {
         status,
         hover = { x: -1, y: -1 },
         player = 0,
-        opponent = 1;
+        opponent = 1,
+        fireworks = new Fireworks(fwc, options);
     canvas[player] = document.getElementById("canvas-grid1");
     canvas[opponent] = document.getElementById("canvas-grid2");
     context[player] = canvas[player].getContext("2d");
@@ -62,6 +68,9 @@ const Game = (function() {
     }
     function init() {
         let i;
+        fireworks.stop();
+        pwc.style.display = 'block';
+        fwc.innerHTML = '';
         status = config.progress;
         grid[player] = {
             shots: [rows * rows],
@@ -108,7 +117,9 @@ const Game = (function() {
         status = config.gameover;
         turn = false;
         if (winner) {
-            startFireworks(Fireworks, document.getElementById('game'))
+            pwc.style.display = 'none';
+            fireworks = new Fireworks(fwc, options);
+            fireworks.start();
             $("#turn-status")
                 .removeClass("opponent-turn")
                 .removeClass("my-turn")
