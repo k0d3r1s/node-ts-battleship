@@ -74,3 +74,11 @@ h3 {
     background-color: #f2dede;
     border-color: #ebccd1;
 }
+
+#remaining-ships {
+    text-align: center;
+}
+
+#remaining-ships p {
+    margin: 0 auto;
+}

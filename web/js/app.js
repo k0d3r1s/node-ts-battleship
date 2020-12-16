@@ -86,6 +86,7 @@ const Game = (function() {
     function update(player, state) {
         grid[player] = state;
         draw(player);
+        generateRemainingShipsHtml();
     }
     function doTurn(state) {
         if (status !== config.gameover) {
@@ -147,7 +148,6 @@ const Game = (function() {
     function drawShips(index) {
         let ship, shipWidth, shipLength;
         context[index].fillStyle = "#424247";
-        console.log(grid[index]);
         for (let i = 0; i < grid[index].ships.length; i++) {
             ship = grid[index].ships[i];
             let x = ship.coordinate.x * (space + border) + border;
@@ -225,6 +225,52 @@ const Game = (function() {
         }
         return adjacent;
     }
+
+    /**
+     * Get opponent ships array
+     *
+     * @returns {[]|[IShip]|[Ship]|[Ship]|*}
+     */
+    function getSunkOpponentShips() {
+        return grid[opponent].ships;
+    }
+
+    /**
+     *
+     * @returns {{'1': number, '2': number, '3': number, '4': number, '5': number}}
+     */
+    function getShipsRemaining() {
+        const ships = {
+            1: 1,
+            2: 1,
+            3: 1,
+            4: 1,
+            5: 1,
+        };
+
+        getSunkOpponentShips().map((ship) => {
+            if (ships[ship.size] > 0) {
+                ships[ship.size]--;
+            }
+        });
+
+        return ships;
+    }
+
+    /**
+     * Generate & update remaining ships html on FE
+     */
+    function generateRemainingShipsHtml() {
+        let html = '';
+        const ships = getShipsRemaining();
+        Object.entries(ships).map((ship) => {
+            const [key, value] = ship;
+
+            html += `<p>Size ${key} left: <strong>${value}</strong></p>`;
+        });
+        $('#remaining-ships').html(html);
+    }
+
     return {
         init: init,
         update: update,
