@@ -33,7 +33,7 @@ class Game {
         this.winner = player === config.players.player ? config.players.opponent : config.players.player;
     }
     shoot(coordinate) {
-        let opponent = this.current === config.players.player ? config.players.opponent : config.players.player, index = coordinate.y * config.grid.rows + coordinate.x;
+        let opponent = this.current === config.players.player ? config.players.opponent : config.players.player, index = coordinate.y * config.grid.cols + coordinate.x;
         if (this.players[opponent].shots[index] === 0 && this.status === config.status.progress) {
             if (!this.players[opponent].shoot(index)) {
                 this.switch();

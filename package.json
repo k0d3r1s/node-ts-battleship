@@ -9,7 +9,7 @@
     },
     "license": "WTFPL",
     "scripts": {
-        "build": "tsc -p server; tsc -p client"
+        "build": "tsc -p server"
     },
     "repository": {
         "type": "git",

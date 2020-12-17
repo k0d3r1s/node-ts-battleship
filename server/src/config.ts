@@ -1,5 +1,6 @@
 export const grid = {
-    rows:10
+    rows:10,
+    cols: 15
 }
 
 export const ships = {
