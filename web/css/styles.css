@@ -1,8 +1,10 @@
-@media (min-width: 1200px) {
+/* @media (min-width: 1200px) {
     .container {
         width: 970px;
     }
-}
+} */
+
+
 
 html,
 body,
@@ -13,6 +15,7 @@ body,
 .container {
     display: table;
     vertical-align: middle;
+    width: 1200px;
 }
 .vertical-center-row {
     display: table-cell;

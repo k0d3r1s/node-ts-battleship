@@ -24,15 +24,18 @@ const Game = (function() {
     let canvas = [],
         context = [],
         grid = [],
-        width = 361,
         border = 1,
         rows = 10,
-        space = (width - border * rows - border) / rows,
+        cols = 15,
+        width = 36*cols+1,
+        height = 36*rows+1,
+        spaceHeight = (height - border * rows - border) / rows,
+        spaceWidth = (width - border * cols - border) / cols,
         turn = false,
         status,
         hover = { x: -1, y: -1 },
         player = 0,
-        opponent = 1,
+        opponent = 1;
         fireworks = new Fireworks(fwc, options);
     canvas[player] = document.getElementById("canvas-grid1");
     canvas[opponent] = document.getElementById("canvas-grid2");
@@ -49,14 +52,17 @@ const Game = (function() {
     });
     canvas[opponent].addEventListener("click", function(e) {
         if (turn) {
-            let pos = coordinates(e, canvas[1]);
-            shot(square(pos.x, pos.y));
+            let pos = coordinates(e, canvas[opponent]);
+            console.log(pos);
+            let sq = square(pos.x, pos.y);
+            console.log(sq);
+            shot(sq);
         }
     });
     function square(x, y) {
         return {
-            x: Math.floor(x / (width / rows)),
-            y: Math.floor(y / (width / rows))
+            x: Math.floor(x / (width / cols)),
+            y: Math.floor(y / (height / rows))
         };
     }
     function coordinates(event, canvas) {
@@ -71,16 +77,24 @@ const Game = (function() {
         fireworks.stop();
         pwc.style.display = 'block';
         fwc.innerHTML = '';
+        console.log('init');
+
+        canvas[player].width = width;
+        canvas[player].height = height;
+
+        canvas[opponent].width = width;
+        canvas[opponent].height = height;
+
         status = config.progress;
         grid[player] = {
-            shots: [rows * rows],
+            shots: [rows * cols],
             ships: []
         };
         grid[opponent] = {
-            shots: [rows * rows],
+            shots: [rows * cols],
             ships: []
         };
-        for (i = 0; i < rows * rows; i++) {
+        for (i = 0; i < rows * cols; i++) {
             grid[player].shots[i] = 0;
             grid[opponent].shots[i] = 0;
         }
@@ -135,6 +149,7 @@ const Game = (function() {
         $(".btn-leave-game").click(leave);
     }
     function draw(index) {
+        console.log(grid[index].shots.length);
         fixAround(index);
         drawSquares(index);
         drawShips(index);
@@ -143,16 +158,16 @@ const Game = (function() {
     function drawSquares(index) {
         let x, y;
         context[index].fillStyle = "#232323";
-        context[index].fillRect(0, 0, width, width);
+        context[index].fillRect(0, 0, width, height);
         for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < rows; j++) {
-                x = j * (space + border) + border;
-                y = i * (space + border) + border;
+            for (let j = 0; j < cols; j++) {
+                x = j * (spaceWidth + border) + border;
+                y = i * (spaceHeight + border) + border;
                 context[index].fillStyle = "#4477FF";
-                if (j === hover.x && i === hover.y && index === 1 && grid[index].shots[i * rows + j] === 0 && turn) {
+                if (j === hover.x && i === hover.y && index === 1 && grid[index].shots[i * cols + j] === 0 && turn) {
                     context[index].fillStyle = "#00FF00";
                 }
-                context[index].fillRect(x, y, space, space);
+                context[index].fillRect(x, y, spaceWidth, spaceHeight);
             }
         }
     }
@@ -161,10 +176,10 @@ const Game = (function() {
         context[index].fillStyle = "#424247";
         for (let i = 0; i < grid[index].ships.length; i++) {
             ship = grid[index].ships[i];
-            let x = ship.coordinate.x * (space + border) + border;
-            let y = ship.coordinate.y * (space + border) + border;
-            shipWidth = space;
-            shipLength = space * ship.size + border * (ship.size - 1);
+            let x = ship.coordinate.x * (spaceWidth + border) + border;
+            let y = ship.coordinate.y * (spaceHeight + border) + border;
+            shipWidth = spaceWidth;
+            shipLength = spaceWidth * ship.size + border * (ship.size - 1);
             if (!ship.vertical) {
                 context[index].fillRect(x, y, shipLength, shipWidth);
             } else {
@@ -175,15 +190,15 @@ const Game = (function() {
     function drawMarks(index) {
         let squareX, squareY;
         for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < rows; j++) {
-                squareX = j * (space + border) + border;
-                squareY = i * (space + border) + border;
-                if (grid[index].shots[i * rows + j] === 1) {
+            for (let j = 0; j < cols; j++) {
+                squareX = j * (spaceWidth + border) + border;
+                squareY = i * (spaceHeight + border) + border;
+                if (grid[index].shots[i * cols + j] === 1) {
                     context[index].fillStyle = "#2A2A96";
-                    context[index].fillRect(squareX, squareY, space, space);
-                } else if (grid[index].shots[i * rows + j] === 2) {
+                    context[index].fillRect(squareX, squareY, spaceWidth, spaceHeight);
+                } else if (grid[index].shots[i * cols + j] === 2) {
                     context[index].fillStyle = "#E33812";
-                    context[index].fillRect(squareX, squareY, space, space);
+                    context[index].fillRect(squareX, squareY, spaceWidth, spaceHeight);
                 }
             }
         }
@@ -192,17 +207,19 @@ const Game = (function() {
         let ship;
         for (let i = 0; i < grid[index].ships.length; i++) {
             ship = grid[index].ships[i];
+            console.log(ship, ship.hits >= ship.size);
             if (ship.hits >= ship.size) {
-                for (let x = 0; x < rows; x++) {
+                for (let x = 0; x < cols; x++) {
                     for (let y = 0; y < rows; y++) {
                         if (x == ship.coordinate.x && y == ship.coordinate.y) {
                             for (let n = 0; n < ship.size; n++) {
                                 let number;
                                 if (ship.vertical) {
-                                    number = (y + n) * rows + x;
+                                    number = (y + n) * cols + x;
                                 } else {
-                                    number = y * rows + (x + n);
+                                    number = y * cols + (x + n);
                                 }
+                                console.log(x, y, number);
                                 mark(index, number);
                             }
                         }
@@ -222,17 +239,18 @@ const Game = (function() {
         }
     }
     function getAdjacent(index) {
+        console.log(index);
         let adjacent = [];
-        adjacent.push(index - rows, index + rows);
-        if (index % rows !== 0) {
+        adjacent.push(index - cols, index + cols);
+        if (index % cols !== 0) {
             adjacent.push(index - 1);
-            adjacent.push(index - 1 - rows);
-            adjacent.push(index - 1 + rows);
+            adjacent.push(index - 1 - cols);
+            adjacent.push(index - 1 + cols);
         }
         if ((index + 1) % rows !== 0) {
             adjacent.push(index + 1);
-            adjacent.push(index + 1 - rows);
-            adjacent.push(index + 1 + rows);
+            adjacent.push(index + 1 - cols);
+            adjacent.push(index + 1 + cols);
         }
         return adjacent;
     }

@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.grid = {
-    rows: 10
+    rows: 10,
+    cols: 15
 };
 exports.ships = {
     map: [5, 4, 3, 2, 1],
