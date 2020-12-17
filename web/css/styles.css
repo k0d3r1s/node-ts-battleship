@@ -90,3 +90,13 @@ h3 {
 #remaining-ships p {
     margin: 0 auto;
 }
+
+.app-title {
+    padding: 2em;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.app-title h1 {
+    font-weight: 900;
+}
