@@ -12,7 +12,7 @@ export class Player implements IPlayer {
 
     constructor(id: string) {
         this.id = id;
-        let max = config.grid.rows * config.grid.rows;
+        let max = config.grid.rows * config.grid.cols;
 
         this.shots = [max];
         this.grid = [max];
@@ -75,15 +75,15 @@ export class Player implements IPlayer {
         let gridIndex, xMax, yMax;
         for (let i = 0; i < config.ships.max; i++) {
             ship.vertical = Math.random() > 0.5;
-            xMax = !ship.vertical ? config.grid.rows - ship.size + 1 : config.grid.rows;
+            xMax = !ship.vertical ? config.grid.cols - ship.size + 1 : config.grid.cols;
             yMax = !ship.vertical ? config.grid.rows : config.grid.rows - ship.size + 1;
             ship.coordinate.x = Math.floor(Math.random() * xMax);
             ship.coordinate.y = Math.floor(Math.random() * yMax);
             if (!this.overlap(ship) && !this.adjacent(ship)) {
-                gridIndex = ship.coordinate.y * config.grid.rows + ship.coordinate.x;
+                gridIndex = ship.coordinate.y * config.grid.cols + ship.coordinate.x;
                 for (let j = 0; j < ship.size; j++) {
                     this.grid[gridIndex] = index;
-                    gridIndex += !ship.vertical ? 1 : config.grid.rows;
+                    gridIndex += !ship.vertical ? 1 : config.grid.cols;
                 }
                 return true;
             }
@@ -92,12 +92,12 @@ export class Player implements IPlayer {
     }
 
     overlap(ship: IShip) {
-        let index = ship.coordinate.y * config.grid.rows + ship.coordinate.x;
+        let index = ship.coordinate.y * config.grid.cols + ship.coordinate.x;
         for (let i = 0; i < ship.size; i++) {
             if (this.grid[index] >= 0) {
                 return true;
             }
-            index += !ship.vertical ? 1 : config.grid.rows;
+            index += !ship.vertical ? 1 : config.grid.cols;
         }
         return false;
     }
@@ -108,10 +108,10 @@ export class Player implements IPlayer {
             x2 = !ship.vertical ? ship.coordinate.x + ship.size : ship.coordinate.x + 1,
             y2 = !ship.vertical ? ship.coordinate.y + 1 : ship.coordinate.y + ship.size;
         for (let i = x1; i <= x2; i++) {
-            if (i < 0 || i > config.grid.rows - 1) continue;
+            if (i < 0 || i > config.grid.cols - 1) continue;
             for (let j = y1; j <= y2; j++) {
                 if (j < 0 || j > config.grid.rows - 1) continue;
-                if (this.grid[j * config.grid.rows + i] >= 0) {
+                if (this.grid[j * config.grid.cols + i] >= 0) {
                     return true;
                 }
             }

@@ -13,15 +13,20 @@ app.set("port", port);
 let users = {};
 let counter = 1;
 const http = require("http").Server(app);
-app.use(express.static(__dirname + "/../web"));
+app.use(express.static(__dirname + "/../web"), function (req, res) {
+    console.log(req);
+});
 http.listen(port, function () {
     console.log("listening on *:" + port);
 });
 let io = require("socket.io")(http);
 io.on("connection", function (socket) {
     console.log(new Date().toISOString() + " ID " + socket.id + " connected.");
+    console.log(socket.handshake.query.name);
     socket.join("waiting");
     socket.on("shot", function (square) {
+        square = JSON.parse(square);
+        console.log(square);
         let coordinate = new coordinate_1.Coordinate(square.x, square.y);
         let game = users[socket.id].game, opponent;
         if (game !== null) {
