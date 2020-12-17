@@ -105,11 +105,19 @@ const Game = (function() {
                     .removeClass("opponent-turn")
                     .addClass("my-turn")
                     .html("Select one blue field where you want to shoot!");
+
+                $(".panel-body")
+                    .removeClass("blocked-move")
+                    .addClass("your-move");
             } else {
                 $("#turn-status")
                     .removeClass("my-turn")
                     .addClass("opponent-turn")
                     .html("Waiting for opponent to shoot!");
+
+                $(".panel-body")
+                    .removeClass("your-move")
+                    .addClass("blocked-move");
             }
         }
     }
