@@ -41,18 +41,21 @@
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">Game #<span id="game-number"></span></div>
                                     <div class="panel-body">
-                                        <div class="row">
-                                            <div class="col-md-6 player-grid text-center">
-                                                <h3>Me</h3>
-                                                <canvas id="canvas-grid1" width="361" height="361">Browser does not support canvas.</canvas>
-                                            </div>
-                                            <div class="col-md-6 player-grid text-center">
-                                                <h3>Opponent</h3>
-                                                <canvas id="canvas-grid2" width="361" height="361">Browser does not support canvas.</canvas>
+                                        <div id="fireworks"></div>
+                                        <div id="game-panel">
+                                            <div class="row">
+                                                <div class="col-md-6 player-grid text-center">
+                                                    <h3>Me</h3>
+                                                    <canvas id="canvas-grid1" width="361" height="361">Browser does not support canvas.</canvas>
+                                                </div>
+                                                <div class="col-md-6 player-grid text-center">
+                                                    <h3>Opponent</h3>
+                                                    <canvas id="canvas-grid2" width="361" height="361">Browser does not support canvas.</canvas>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div id="remaining-ships"></div>
                                     <div class="list-group-item text-center" id="turn-status"></div>
                                 </div>
                             </div>
