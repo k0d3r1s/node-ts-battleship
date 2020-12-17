@@ -35,7 +35,7 @@ const Game = (function() {
         status,
         hover = { x: -1, y: -1 },
         player = 0,
-        opponent = 1;
+        opponent = 1,
         fireworks = new Fireworks(fwc, options);
     canvas[player] = document.getElementById("canvas-grid1");
     canvas[opponent] = document.getElementById("canvas-grid2");
